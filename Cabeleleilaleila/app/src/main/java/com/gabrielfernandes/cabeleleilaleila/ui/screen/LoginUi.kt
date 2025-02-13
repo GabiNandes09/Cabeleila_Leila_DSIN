@@ -97,7 +97,7 @@ fun LoginUi(
             )
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navController.navigate("main") },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.pink)
                 ),
