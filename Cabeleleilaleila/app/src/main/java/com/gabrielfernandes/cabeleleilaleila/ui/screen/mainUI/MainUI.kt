@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gabrielfernandes.cabeleleilaleila.R
 import com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components.HeadUI
+import com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components.MainBottonBar
 
 @Composable
 fun MainUi(
@@ -18,7 +19,8 @@ fun MainUi(
 ) {
     Scaffold(
         containerColor = colorResource(id = R.color.light_pink),
-        topBar = { HeadUI() }
+        topBar = { HeadUI() },
+        bottomBar = { MainBottonBar() }
     ) { paddingValues ->
         Column(
             modifier = Modifier.padding(paddingValues)
