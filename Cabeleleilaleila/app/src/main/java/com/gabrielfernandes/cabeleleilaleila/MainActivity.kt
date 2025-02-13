@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.gabrielfernandes.cabeleleilaleila.ui.screen.CadastroUI
 import com.gabrielfernandes.cabeleleilaleila.ui.screen.LoginUi
 import com.gabrielfernandes.cabeleleilaleila.ui.theme.CabeleleilaleilaTheme
 
@@ -27,7 +28,10 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(navController = navController, startDestination = "login"){
                     composable("login"){
-                        LoginUi()
+                        LoginUi(navController)
+                    }
+                    composable("cadastro"){
+                        CadastroUI(navController)
                     }
                 }
             }

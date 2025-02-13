@@ -1,17 +1,22 @@
 package com.gabrielfernandes.cabeleleilaleila.ui.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,11 +37,25 @@ import androidx.navigation.compose.rememberNavController
 import com.gabrielfernandes.cabeleleilaleila.R
 
 @Composable
-fun LoginUi(
+fun CadastroUI(
     navController: NavController
 ) {
     Scaffold(
-        containerColor = colorResource(id = R.color.light_pink)
+        containerColor = colorResource(id = R.color.light_pink),
+        topBar = {
+            Row {
+                IconButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.padding(10.dp)
+                    ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -52,48 +71,26 @@ fun LoginUi(
                     .padding(20.dp)
                     .size(200.dp)
             )
-            TextField(
+
+            DefaultTextField(
                 value = "",
                 onValueChange = {},
-                label = {
-                    Text(
-                        text = "Email:",
-                        color = Color.Black
-                    )
-                },
-                modifier = Modifier
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
-                colors = TextFieldDefaults.colors(
-                    disabledContainerColor = Color.LightGray,
-                    focusedContainerColor = Color.White,
-                    errorContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
+                label = "Nome:"
             )
-            TextField(
+            DefaultTextField(
                 value = "",
                 onValueChange = {},
-                label = {
-                    Text(
-                        text = "Senha:",
-                        color = Color.Black
-                    )
-                },
-                modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
-                colors = TextFieldDefaults.colors(
-                    disabledContainerColor = Color.LightGray,
-                    focusedContainerColor = Color.White,
-                    errorContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black
-                )
+                label = "Email:"
+            )
+            DefaultTextField(
+                value = "",
+                onValueChange = {},
+                label = "Senha:"
+            )
+            DefaultTextField(
+                value = "",
+                onValueChange = {},
+                label = "Confirme a senha"
             )
 
             Button(
@@ -107,31 +104,61 @@ fun LoginUi(
                     .shadow(5.dp, RoundedCornerShape(20.dp))
             ) {
                 Text(
-                    text = "Entrar",
+                    text = "Cadastrar",
                     color = Color.White
                 )
             }
             Button(
-                onClick = { navController.navigate("cadastro") },
+                onClick = { navController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent
+                    containerColor = colorResource(id = R.color.light_pink)
                 ),
                 modifier = Modifier
-                    .padding(vertical = 20.dp)
+                    .width(150.dp)
+                    .shadow(5.dp, RoundedCornerShape(20.dp))
             ) {
                 Text(
-                    text = "Não possui conta? \n Clique para cadastrar",
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
+                    text = "Cancelar",
+                    color = Color.White
                 )
             }
         }
     }
 }
 
+@Composable
+private fun DefaultTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String
+) {
+    TextField(
+        value = value,
+        onValueChange = { onValueChange(it) },
+        label = {
+            Text(
+                text = label,
+                color = Color.Black
+            )
+        },
+        modifier = Modifier
+            .padding(10.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
+        colors = TextFieldDefaults.colors(
+            disabledContainerColor = Color.LightGray,
+            focusedContainerColor = Color.White,
+            errorContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
+        )
+    )
+}
+
 @Preview
 @Composable
 private fun Preview() {
     val navController = rememberNavController()
-    LoginUi(navController)
+    CadastroUI(navController)
 }
