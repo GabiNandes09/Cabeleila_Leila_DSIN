@@ -1,6 +1,6 @@
 package com.gabrielfernandes.cabeleleilaleila.modules
 
-import com.gabrielfernandes.cabeleleilaleila.IP
+import com.gabrielfernandes.cabeleleilaleila.ip.IP
 import com.gabrielfernandes.cabeleleilaleila.networkRepository.SchedulingRepository
 import com.gabrielfernandes.cabeleleilaleila.networkRepository.ServiceRepository
 import com.gabrielfernandes.cabeleleilaleila.networkRepository.UserRepository

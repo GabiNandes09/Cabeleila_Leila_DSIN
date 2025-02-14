@@ -25,4 +25,4 @@ local.properties
 .DS_Store
 Thumbs.db
 
-app/src/main/java/com/gabrielfernandes/cabeleleilaleila/IP.kt
+/ip/*
