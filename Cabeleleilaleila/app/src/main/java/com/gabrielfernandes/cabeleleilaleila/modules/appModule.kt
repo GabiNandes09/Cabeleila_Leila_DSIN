@@ -2,7 +2,7 @@ package com.gabrielfernandes.cabeleleilaleila.modules
 
 import com.gabrielfernandes.cabeleleilaleila.viewmodels.CadastroViewModel
 import com.gabrielfernandes.cabeleleilaleila.viewmodels.LoginViewModel
-import com.gabrielfernandes.cabeleleilaleila.viewmodels.MainPageViewModel
+import com.gabrielfernandes.cabeleleilaleila.viewmodels.MainPageClientViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -19,7 +19,7 @@ val appModule = module {
         )
     }
     viewModel {
-        MainPageViewModel(
+        MainPageClientViewModel(
             serviceRepository = get()
         )
     }

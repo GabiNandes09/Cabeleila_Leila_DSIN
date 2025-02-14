@@ -50,76 +50,76 @@ fun DatePickerMainPage(
         mutableStateOf(false)
     }
     val datePickerState = rememberDatePickerState()
-        TextField(
-            value = "Começar agendamento",
-            onValueChange = {},
-            trailingIcon = {
-                Icon(
-                    imageVector = if (expanded)
-                        Icons.Default.KeyboardArrowDown
-                    else
-                        Icons.Default.KeyboardArrowUp,
-                    contentDescription = null
-                )
-            },
-            modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .shadow(3.dp, RoundedCornerShape(20.dp))
-                .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
-            readOnly = true,
-            interactionSource = remember {
-                MutableInteractionSource()
-            }.also {
-                LaunchedEffect(key1 = it) {
-                    it.interactions.collectLatest { interaction ->
-                        if (interaction is PressInteraction.Release) {
-                            expanded = !expanded
-                        }
-                    }
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                disabledContainerColor = Color.LightGray,
-                focusedContainerColor = Color.White,
-                errorContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black
+    TextField(
+        value = "Começar agendamento",
+        onValueChange = {},
+        trailingIcon = {
+            Icon(
+                imageVector = if (expanded)
+                    Icons.Default.KeyboardArrowDown
+                else
+                    Icons.Default.KeyboardArrowUp,
+                contentDescription = null
             )
-        )
-        if (expanded){
-            DatePickerDialog(
-                onDismissRequest = { expanded = false },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            datePickerState.selectedDateMillis?.let { millis ->
-                                val localDateTime = Instant.ofEpochMilli(millis)
-                                    .atZone(ZoneOffset.UTC)
-                                    .toLocalDate()
-                                onSelectDate(localDateTime.toString())
-                            }
-                            expanded = false
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.pink)
-                        )
-                    ) {
-                        Text(
-                            text = "Selecionar",
-                            color = Color.White
-                        )
+        },
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .shadow(3.dp, RoundedCornerShape(20.dp))
+            .border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
+        readOnly = true,
+        interactionSource = remember {
+            MutableInteractionSource()
+        }.also {
+            LaunchedEffect(key1 = it) {
+                it.interactions.collectLatest { interaction ->
+                    if (interaction is PressInteraction.Release) {
+                        expanded = !expanded
                     }
                 }
-            ) {
-                Column {
-                    DatePicker(
-                        state = datePickerState,
-                        headline = { Text(text = "Selecione: ") }
+            }
+        },
+        colors = TextFieldDefaults.colors(
+            disabledContainerColor = Color.LightGray,
+            focusedContainerColor = Color.White,
+            errorContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedTextColor = Color.Black,
+            unfocusedTextColor = Color.Black
+        )
+    )
+    if (expanded) {
+        DatePickerDialog(
+            onDismissRequest = { expanded = false },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val localDateTime = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneOffset.UTC)
+                                .toLocalDate()
+                            onSelectDate(localDateTime.toString())
+                        }
+                        expanded = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.pink)
+                    )
+                ) {
+                    Text(
+                        text = "Selecionar",
+                        color = Color.White
                     )
                 }
             }
+        ) {
+            Column {
+                DatePicker(
+                    state = datePickerState,
+                    headline = { Text(text = "Selecione: ") }
+                )
+            }
         }
+    }
 }

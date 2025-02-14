@@ -2,43 +2,30 @@ package com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -47,18 +34,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gabrielfernandes.cabeleleilaleila.R
-import com.gabrielfernandes.cabeleleilaleila.models.Service
-import com.gabrielfernandes.cabeleleilaleila.viewmodels.MainPageViewModel
-import kotlinx.coroutines.flow.collectLatest
+import com.gabrielfernandes.cabeleleilaleila.viewmodels.MainPageClientViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.time.Instant
-import java.time.ZoneOffset
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainPageUI() {
-    val viewModel: MainPageViewModel = koinViewModel()
-    val listService by viewModel.listService.collectAsState()
+
 
     Scaffold(
         containerColor = colorResource(id = R.color.light_pink)
@@ -66,9 +48,7 @@ fun MainPageUI() {
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-            UserPageUI(
-                listService
-            )
+            UserPageUI()
         }
     }
 
@@ -83,47 +63,95 @@ private fun Preview() {
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserPageUI(
-    listService: List<Service>
-) {
+fun UserPageUI() {
+    val viewModel: MainPageClientViewModel = koinViewModel()
+    val listService by viewModel.listService.collectAsState()
+    val total by viewModel.total.collectAsState()
+    val time by viewModel.hour.collectAsState()
+
     var selectedDate by remember {
         mutableStateOf("")
     }
-    var expanded by remember {
-        mutableStateOf(false)
+    var qtd by remember {
+        mutableIntStateOf(1)
     }
-    var servico: String? by remember {
-        mutableStateOf(null)
-    }
-    var expandedService by remember {
-        mutableStateOf(false)
-    }
+    Column {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            item {
+                DatePickerMainPage {
+                    selectedDate = it
+                    viewModel.setSelectedDate(it)
+                }
+            }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        item {
-            DatePickerMainPage {
-                selectedDate = it
+            if (selectedDate.isNotEmpty()) {
+                item {
+                    TextFieldPadrao(
+                        text = selectedDate,
+                        onValueChance = {},
+                        label = "Data selecionada",
+                        readOnly = true
+                    )
+                }
+                item {
+                    CustomTimePickerDialog(
+                        onTimeSelected = {hour, minute -> viewModel.setHour(hour, minute)}
+                    )
+                }
+                items(qtd) { index ->
+                    DefaultComboBox(
+                        list = listService,
+                        onMenosCLick = {
+                            if (qtd > 1) {
+                                viewModel.eraseService(index)
+                                qtd -= 1
+                            } else qtd = 1
+                        },
+                        onMaisClick = { qtd += 1 },
+                        onItemClick = { service ->
+                            viewModel.addService(service, index)
+                        },
+                        canAdd = index == qtd - 1
+                    )
+                }
             }
         }
-
-        if (selectedDate.isNotEmpty()) {
-            item {
-                TextFieldPadrao(
-                    text = selectedDate,
-                    onValueChance = {},
-                    label = "DataSelecionada",
-                    readOnly = true
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color.White)
+                .border(2.dp, Color.Black, RoundedCornerShape(20.dp))
+        ) {
+            Text(
+                text = "Total: ",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(10.dp)
+            )
+            Text(
+                text = "R$ ${String.format("%.2f", total)}",
+                modifier = Modifier.padding(10.dp)
+            )
+            Button(
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Text(
+                    text = "Finalizar",
+                    color = Color.Blue
                 )
             }
-            item {
-                DefaultComboBox(list = listService)
-            }
         }
     }
+
 }
 
 @Composable
@@ -156,3 +184,4 @@ private fun TextFieldPadrao(
         )
     )
 }
+
