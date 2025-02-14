@@ -5,10 +5,10 @@ data class User(
     val username: String,
     val password: String,
     val email: String,
-    val role: Role
+    val role: Role = Role.CLIENT
 )
 
 enum class Role {
     ADMIN,
-    USER
+    CLIENT
 }

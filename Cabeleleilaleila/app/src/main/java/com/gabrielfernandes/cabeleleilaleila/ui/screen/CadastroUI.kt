@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -22,6 +23,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,11 +39,44 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gabrielfernandes.cabeleleilaleila.R
+import com.gabrielfernandes.cabeleleilaleila.viewmodels.CadastroViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CadastroUI(
     navController: NavController
 ) {
+    val viewModel: CadastroViewModel = koinViewModel()
+
+    val name by viewModel.name.collectAsState()
+    val email by viewModel.email.collectAsState()
+    val password by viewModel.password.collectAsState()
+    val confirmation by viewModel.confirmation.collectAsState()
+    val hasError by viewModel.hasError.collectAsState()
+    val passwordDoenstMatch by viewModel.passwordDoenstMatch.collectAsState()
+    val complete by viewModel.complete.collectAsState()
+
+    if (hasError || passwordDoenstMatch){
+        AlertDialog(
+            onDismissRequest = { viewModel.onOkayClick() },
+            confirmButton = {
+                Button(onClick = { viewModel.onOkayClick() }) {
+                    Text(text = "Entendido")
+                }
+            },
+            title = {
+                Text(text = if (hasError) "Algo deu errado!" else if (passwordDoenstMatch) "As senhas não são iguais" else "")
+            },
+            text = {
+                Text(text = "Por favor, corrija e tente novamente!")
+            }
+        )
+    }
+
+    LaunchedEffect(complete) {
+        if (complete) navController.navigate("main")
+    }
+
     Scaffold(
         containerColor = colorResource(id = R.color.light_pink),
         topBar = {
@@ -47,7 +84,7 @@ fun CadastroUI(
                 IconButton(
                     onClick = { navController.popBackStack() },
                     modifier = Modifier.padding(10.dp)
-                    ) {
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null,
@@ -73,28 +110,28 @@ fun CadastroUI(
             )
 
             DefaultTextField(
-                value = "",
-                onValueChange = {},
+                value = name,
+                onValueChange = { viewModel.setName(it) },
                 label = "Nome:"
             )
             DefaultTextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = { viewModel.setEmail(it) },
                 label = "Email:"
             )
             DefaultTextField(
-                value = "",
-                onValueChange = {},
+                value = password,
+                onValueChange = { viewModel.setPassword(it) },
                 label = "Senha:"
             )
             DefaultTextField(
-                value = "",
-                onValueChange = {},
+                value = confirmation,
+                onValueChange = { viewModel.setConfirmation(it) },
                 label = "Confirme a senha"
             )
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.cadastrar() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.pink)
                 ),
