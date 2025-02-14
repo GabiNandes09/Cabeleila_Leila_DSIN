@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -17,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,11 +34,39 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gabrielfernandes.cabeleleilaleila.R
+import com.gabrielfernandes.cabeleleilaleila.viewmodels.LoginViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginUi(
     navController: NavController
 ) {
+    val viewModel: LoginViewModel = koinViewModel()
+
+    val email by viewModel.email.collectAsState("")
+    val senha by viewModel.password.collectAsState("")
+    val logged by viewModel.logged.collectAsState(false)
+    val hasError by viewModel.hasError.collectAsState(false)
+
+    LaunchedEffect(logged) {
+        if (logged) navController.navigate("main")
+    }
+
+    if (hasError) {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.onOkayClick()
+            },
+            confirmButton = {
+                Button(onClick = { viewModel.onOkayClick() }) {
+                    Text(text = "Entendido")
+                }
+            },
+            title = { Text(text = "Erro ao conectar") },
+            text = { Text(text = "Verifique suas credenciais e tente novamente") }
+        )
+    }
+
     Scaffold(
         containerColor = colorResource(id = R.color.light_pink)
     ) { paddingValues ->
@@ -53,8 +85,10 @@ fun LoginUi(
                     .size(200.dp)
             )
             TextField(
-                value = "",
-                onValueChange = {},
+                value = email,
+                onValueChange = {
+                    viewModel.setEmail(it)
+                },
                 label = {
                     Text(
                         text = "Email:",
@@ -75,8 +109,10 @@ fun LoginUi(
                 )
             )
             TextField(
-                value = "",
-                onValueChange = {},
+                value = senha,
+                onValueChange = {
+                    viewModel.setPassword(it)
+                },
                 label = {
                     Text(
                         text = "Senha:",
@@ -97,7 +133,7 @@ fun LoginUi(
             )
 
             Button(
-                onClick = { navController.navigate("main") },
+                onClick = { viewModel.login() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.pink)
                 ),
