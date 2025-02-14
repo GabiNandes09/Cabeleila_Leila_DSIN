@@ -36,9 +36,7 @@ public class Service implements Serializable {
     @Column(name = "price", nullable = false, length = 10)
     private Float price;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "service_scheduling",
-    joinColumns = {@JoinColumn(name= "service_id")}, inverseJoinColumns = {@JoinColumn(name = "scheduling_id")})
+    @ManyToMany(mappedBy = "services")
     @JsonBackReference
     private List<Scheduling> schedulings;
 }

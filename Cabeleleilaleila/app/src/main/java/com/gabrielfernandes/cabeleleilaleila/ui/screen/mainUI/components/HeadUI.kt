@@ -38,7 +38,7 @@ fun HeadUI(user: User, onBackPress: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = {},
+            onClick = {onBackPress()},
             modifier = Modifier.padding(end = 10.dp)
         ) {
             Icon(

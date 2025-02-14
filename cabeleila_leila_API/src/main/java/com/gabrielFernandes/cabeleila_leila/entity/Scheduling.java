@@ -27,6 +27,9 @@ public class Scheduling implements Serializable {
     @Column(name = "hour", nullable = false)
     private String hour;
 
-    @ManyToMany(mappedBy = "schedulings", cascade = CascadeType.MERGE)
+    @ManyToMany
+    @JoinTable(name = "service_scheduling",
+    joinColumns = {@JoinColumn(name= "scheduling_id")}, 
+    inverseJoinColumns = {@JoinColumn(name = "service_id")})
     private List<Service> services = new ArrayList<>();
 }

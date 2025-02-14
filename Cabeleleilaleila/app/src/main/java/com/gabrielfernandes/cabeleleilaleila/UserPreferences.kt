@@ -15,10 +15,12 @@ class UserPreferences(private val context: Context) {
         private val PASSWORD_KEY = stringPreferencesKey("user_password")
         private val USERNAME_KEY = stringPreferencesKey("user_username")
         private val LOGGED_IN_KEY = booleanPreferencesKey("user_logged")
+        private val ID_KEY = stringPreferencesKey("user_ID")
     }
 
-    suspend fun saveUser(username: String, email: String, password: String) {
+    suspend fun saveUser(id: String, username: String, email: String, password: String) {
         context.dataStore.edit { preferences ->
+            preferences[ID_KEY] = id
             preferences[EMAIL_KEY] = email
             preferences[PASSWORD_KEY] = password
             preferences[USERNAME_KEY] = username
@@ -28,6 +30,7 @@ class UserPreferences(private val context: Context) {
 
     val userFlow = context.dataStore.data.map { preferences ->
         User(
+            id = preferences[ID_KEY]?.toLong() ?: 0,
             email = preferences[EMAIL_KEY] ?: "",
             password = preferences[PASSWORD_KEY] ?: "",
             username = preferences[USERNAME_KEY] ?: ""

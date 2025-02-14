@@ -42,6 +42,7 @@ class LoginViewModel(
                 _hasError.value = true
             } else {
                 userPreferences.saveUser(
+                    id = checkedUser.id.toString(),
                     username = checkedUser.username,
                     email = checkedUser.email,
                     password = checkedUser.password

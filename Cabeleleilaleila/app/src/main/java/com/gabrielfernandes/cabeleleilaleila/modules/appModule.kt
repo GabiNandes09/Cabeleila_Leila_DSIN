@@ -24,7 +24,9 @@ val appModule = module {
     }
     viewModel {
         MainPageClientViewModel(
-            serviceRepository = get()
+            serviceRepository = get(),
+            userPreferences = get(),
+            schedulingRepository = get()
         )
     }
 

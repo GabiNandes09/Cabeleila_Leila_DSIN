@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gabrielfernandes.cabeleleilaleila.R
+import com.gabrielfernandes.cabeleleilaleila.models.User
 import com.gabrielfernandes.cabeleleilaleila.viewmodels.MainPageClientViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -68,7 +70,8 @@ fun UserPageUI() {
     val viewModel: MainPageClientViewModel = koinViewModel()
     val listService by viewModel.listService.collectAsState()
     val total by viewModel.total.collectAsState()
-    val time by viewModel.hour.collectAsState()
+    val user by viewModel.userPreferences.userFlow.collectAsState(initial = User(0, "", "", ""))
+    val clean by viewModel.clean.collectAsState()
 
     var selectedDate by remember {
         mutableStateOf("")
@@ -76,6 +79,15 @@ fun UserPageUI() {
     var qtd by remember {
         mutableIntStateOf(1)
     }
+
+    LaunchedEffect(clean) {
+        if (clean) {
+            qtd = 1
+            selectedDate = ""
+            viewModel.finishClean()
+        }
+    }
+
     Column {
         LazyColumn(
             modifier = Modifier
@@ -140,7 +152,7 @@ fun UserPageUI() {
                 modifier = Modifier.padding(10.dp)
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { viewModel.finalize(user) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 modifier = Modifier.padding(10.dp)
             ) {

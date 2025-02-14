@@ -9,15 +9,15 @@ import retrofit2.http.Path
 
 interface SchedulingRepository {
 
-    @GET("schedulings")
+    @GET("scheduling")
     suspend fun getAll() : Response<List<Scheduling>>
 
-    @GET("schedulings/{id}")
+    @GET("scheduling/{id}")
     suspend fun getById(
         @Path("id") id: Long
     ) : Response<Scheduling>
 
-    @POST("schedulings")
+    @POST("scheduling")
     suspend fun insert(
         @Body scheduling: Scheduling
     ) : Response<Scheduling>
