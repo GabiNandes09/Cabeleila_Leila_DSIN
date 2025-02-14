@@ -10,6 +10,7 @@ import com.gabrielFernandes.cabeleila_leila.repository.SchedulingRepository;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RequiredArgsConstructor
 @Service
 public class SchedulingService {

@@ -1,8 +1,9 @@
 package com.gabrielFernandes.cabeleila_leila.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,7 +11,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +36,9 @@ public class Service implements Serializable {
     @Column(name = "price", nullable = false, length = 10)
     private Float price;
 
-    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ServiceScheduling> serviceSchedulings = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "service_scheduling",
+    joinColumns = {@JoinColumn(name= "service_id")}, inverseJoinColumns = {@JoinColumn(name = "scheduling_id")})
+    @JsonBackReference
+    private List<Scheduling> schedulings;
 }

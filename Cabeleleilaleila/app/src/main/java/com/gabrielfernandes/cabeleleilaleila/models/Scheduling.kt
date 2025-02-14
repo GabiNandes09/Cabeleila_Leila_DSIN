@@ -5,5 +5,5 @@ data class Scheduling(
     val user: User,
     val date: String,
     val hour: String,
-    val schedulins: List<ServiceScheduling>
+    val services: List<Service>
 )
