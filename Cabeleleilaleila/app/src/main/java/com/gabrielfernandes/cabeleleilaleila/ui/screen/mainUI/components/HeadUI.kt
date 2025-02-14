@@ -24,9 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gabrielfernandes.cabeleleilaleila.R
+import com.gabrielfernandes.cabeleleilaleila.models.User
 
 @Composable
-fun HeadUI() {
+fun HeadUI(user: User, onBackPress: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(vertical = 20.dp, horizontal = 10.dp)
@@ -58,19 +59,9 @@ fun HeadUI() {
                 fontSize = 20.sp
             )
             Text(
-                text = "[NOME CADASTRADO]",
+                text = user.username.uppercase(),
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
-            )
-        }
-        IconButton(
-            onClick = {},
-            modifier = Modifier.padding(end = 20.dp)
-        ) {
-            Icon(
-                painterResource(id = R.drawable.alert_message),
-                contentDescription = null,
-                modifier = Modifier.size(40.dp)
             )
         }
     }
@@ -79,5 +70,5 @@ fun HeadUI() {
 @Preview
 @Composable
 private fun Preview() {
-    HeadUI()
+    HeadUI(User(0, "", "", ""), {})
 }

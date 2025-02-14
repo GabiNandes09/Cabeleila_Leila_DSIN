@@ -2,13 +2,15 @@ package com.gabrielfernandes.cabeleleilaleila.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gabrielfernandes.cabeleleilaleila.UserPreferences
 import com.gabrielfernandes.cabeleleilaleila.networkRepository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
 
     private val _email = MutableStateFlow("")
@@ -31,18 +33,27 @@ class LoginViewModel(
 
         viewModelScope.launch {
             val users = userRepository.getAll().body()
-            val checked = users?.any { user ->
+            val checkedUser = users?.find { user ->
                 user.email.equals(_email.value, ignoreCase = true) &&
                         user.password.equals(_password.value)
-            } ?: false
-
-            if (!checked){
-                _hasError.value = true
             }
 
-            _logged.value = checked
+            if (checkedUser == null){
+                _hasError.value = true
+            } else {
+                userPreferences.saveUser(
+                    username = checkedUser.username,
+                    email = checkedUser.email,
+                    password = checkedUser.password
+                )
+                _logged.value = true
+            }
+
+
         }
     }
+
+
 
     fun onOkayClick(){
         _hasError.value = false
