@@ -1,5 +1,7 @@
 package com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -12,7 +14,9 @@ import androidx.navigation.compose.rememberNavController
 import com.gabrielfernandes.cabeleleilaleila.R
 import com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components.HeadUI
 import com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components.MainBottonBar
+import com.gabrielfernandes.cabeleleilaleila.ui.screen.mainUI.components.MainPageUI
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainUi(
     navController: NavController
@@ -25,7 +29,7 @@ fun MainUi(
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-
+            MainPageUI()
         }
     }
 }
